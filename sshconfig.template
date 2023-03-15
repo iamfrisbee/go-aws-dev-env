@@ -1,0 +1,2 @@
+Host git-codecommit.*.amazonaws.com
+  User ${AWS_SSH_USER}

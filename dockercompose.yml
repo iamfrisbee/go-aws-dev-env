@@ -1,0 +1,14 @@
+version: "3.1"
+services:
+  go:
+    image: iamfrisbee/go-aws-dev-env
+    environment:
+      # needs your aws credentials in order to handle connections to aws
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+      - AWS_DEFAULT_OUTPUT=${AWS_DEFAULT_OUTPUT}
+    volumes:
+      # needs to point your ssh key into the container
+      - ${SSH_KEY_PATH}:/home/gouser/.ssh/id_rsa
+      - ${SSH_CONFIG_PATH}:/home/gouser/.ssh/config

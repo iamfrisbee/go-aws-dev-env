@@ -71,7 +71,10 @@ RUN chown -R gouser:gouser /home/gouser/.zshrc
 RUN chown -R gouser:gouser /home/gouser/.ssh
 
 # Makes go get use SSH instead of https for codecommit
-RUN su gouser -c "git config --global url.\"ssh://git-codecommit.*.amazonaws.com\".insteadOf \"https://git-codecommit.*.amazonaws.com\""
+RUN su gouser -c "git config --global url.\"ssh://git-codecommit.us-east-1.amazonaws.com\".insteadOf \"https://git-codecommit.us-east-1.amazonaws.com\""
+RUN su gouser -c "git config --global url.\"ssh://git-codecommit.us-east-2.amazonaws.com\".insteadOf \"https://git-codecommit.us-east-2.amazonaws.com\""
+RUN su gouser -c "git config --global url.\"ssh://git-codecommit.us-west-1.amazonaws.com\".insteadOf \"https://git-codecommit.us-west-1.amazonaws.com\""
+RUN su gouser -c "git config --global url.\"ssh://git-codecommit.us-west-2.amazonaws.com\".insteadOf \"https://git-codecommit.us-west-2.amazonaws.com\""
 
 # Safe directory
 RUN su gouser -c "git config --global --add safe.directory /home/gouser/workspace"

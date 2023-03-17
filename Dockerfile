@@ -73,8 +73,11 @@ RUN chown -R gouser:gouser /home/gouser/.ssh
 # Makes go get use SSH instead of https for codecommit
 RUN su gouser -c "git config --global url.\"ssh://git-codecommit.*.amazonaws.com\".insteadOf \"https://git-codecommit.*.amazonaws.com\""
 
+# Safe directory
+RUN su gouser -c "git config --global --add safe.directory /home/gouser/workspace"
+
 # Set who's in charge
-WORKDIR /home/gouser/workspaces
+WORKDIR /home/gouser/workspace
 USER gouser
 
 # keep the lights on

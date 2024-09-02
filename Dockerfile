@@ -1,4 +1,4 @@
-FROM debian:bullseye-slim as base
+FROM debian:bullseye-slim AS base
 
 # env vars used for configuration
 ENV GOPRIVATE="git-codecommit.*.amazonaws.com/v1/repos"
@@ -19,9 +19,14 @@ RUN mkdir /usr/local/share/nvm && chmod -R 0755 /usr/local/share && chmod 0777 $
 RUN apt-get update \
   && apt-get install -y curl unzip git zsh zplug gcc vim sudo make locales gettext
 
-FROM base as installs
+FROM base AS installs
+
+ARG TARGETARCH
+
+RUN echo "build for ${TARGETARCH}"
+
 # install golang
-RUN curl -L "https://go.dev/dl/go1.19.3.linux-amd64.tar.gz" -o "go.tar.gz" \
+RUN curl -L "https://go.dev/dl/go1.20.linux-${TARGETARCH}.tar.gz" -o "go.tar.gz" \
   && rm -Rf /usr/local/go \
   && tar -C /usr/local -xzf go.tar.gz
 
@@ -33,18 +38,19 @@ RUN git clone https://github.com/go-delve/delve \
 RUN go install golang.org/x/tools/gopls@latest
 
 # install staticcheck for linting
-RUN go install honnef.co/go/tools/cmd/staticcheck@latest
+RUN go install honnef.co/go/tools/cmd/staticcheck@v0.4.1
 
 # install node js and serverless
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 
 # install aws cli
 RUN cd /opt \
-  && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/opt/awscliv2.zip" \
+  && if [ "${TARGETARCH}" = "arm64" ]; then AWSARCH="aarch64"; else AWSARCH="x86_64"; fi \
+  && curl "https://awscli.amazonaws.com/awscli-exe-linux-${AWSARCH}.zip" -o "/opt/awscliv2.zip" \
   && unzip /opt/awscliv2.zip \
   && /opt/aws/install
 
-FROM installs as gouser
+FROM installs AS gouser
 # create non-root user
 RUN useradd -m -s /bin/zsh gouser -G sudo
 

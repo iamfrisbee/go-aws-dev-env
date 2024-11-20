@@ -1,4 +1,4 @@
-FROM debian:bullseye-slim AS base
+FROM --platform=$BUILDPLATFORM debian:bullseye-slim AS base
 
 # env vars used for configuration
 ENV GOPRIVATE="git-codecommit.*.amazonaws.com/v1/repos"

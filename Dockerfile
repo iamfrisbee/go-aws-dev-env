@@ -26,7 +26,7 @@ ARG TARGETARCH
 RUN echo "build for ${TARGETARCH}"
 
 # install golang
-RUN curl -L "https://go.dev/dl/go1.20.linux-${TARGETARCH}.tar.gz" -o "go.tar.gz" \
+RUN curl -L "https://go.dev/dl/go1.21.13.linux-${TARGETARCH}.tar.gz" -o "go.tar.gz" \
   && rm -Rf /usr/local/go \
   && tar -C /usr/local -xzf go.tar.gz
 

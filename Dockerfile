@@ -17,7 +17,8 @@ RUN mkdir /usr/local/share/nvm && chmod -R 0755 /usr/local/share && chmod 0777 $
 
 # update and install packages
 RUN apt-get update \
-  && apt-get install -y curl unzip git zsh zplug gcc vim sudo make locales gettext
+  && apt-get install -y curl unzip git zsh zplug gcc vim sudo make locales gettext libc6-dev gcc-aarch64-linux-gnu gcc-x86-64-linux-gnu build-essential \
+  && rm -rf /var/lib/apt/lists/*
 
 FROM base AS installs
 
@@ -30,15 +31,10 @@ RUN curl -L "https://go.dev/dl/go1.21.13.linux-${TARGETARCH}.tar.gz" -o "go.tar.
   && rm -Rf /usr/local/go \
   && tar -C /usr/local -xzf go.tar.gz
 
-RUN git clone https://github.com/go-delve/delve \
-  && cd delve \
-  && go install github.com/go-delve/delve/cmd/dlv
-
-# install Go Language Server for IDEs
-RUN go install golang.org/x/tools/gopls@latest
-
-# install staticcheck for linting
-RUN go install honnef.co/go/tools/cmd/staticcheck@v0.4.1
+RUN if [ "${TARGETARCH}" = "arm64" ]; then export CC="aarch64-linux-gnu-gcc"; else export CC="x86_64-linux-gnu-gcc"; fi \
+  && go install github.com/go-delve/delve/cmd/dlv@v1.23.1 \
+  && go install golang.org/x/tools/gopls@latest \
+  && go install honnef.co/go/tools/cmd/staticcheck@v0.4.1
 
 # install node js and serverless
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
